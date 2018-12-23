@@ -10,7 +10,7 @@ from MySocketPro import *
 HOST = '127.0.0.1'
 PORT = 8134
 
-class Client:
+class Client(tk.Tk):
     def __init__(self, host, port):
         # host and port
         self.__host = host
@@ -23,7 +23,12 @@ class Client:
         # GUI windows
         #self.login_window = LoginWindow(self)
         #threading.Thread(target=self.login_window.mainloop, daemon=True).start()
-        self.login_window = LoginWindow(self)
+        container = tk.Frame(self)
+        container.pack(side='top', fill='both', expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.login_window = LoginWindow(self, container)
         self.main_window = None
         self.private_window_dict = {}
 
@@ -194,9 +199,9 @@ class Client:
             self.__socket.close()
             self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-class LoginWindow(tk.Tk):
-    def __init__(self, client):
-        tk.Tk.__init__(self)
+class LoginWindow(tk.Frame):
+    def __init__(self, client, parent):
+        tk.Tk.__init__(self, parent)
         self.client = client
 
         #self.title = "Start Chatting"
@@ -261,9 +266,9 @@ class LoginWindow(tk.Tk):
     def run(self):
         self.mainloop()
 
-class ChatWindow(tk.Tk):
-    def __init__(self, client):
-        tk.Tk.__init__(self)
+class ChatWindow(tk.Frame):
+    def __init__(self, client, parent):
+        tk.Tk.__init__(self, parent)
         self.client = client
         self.font = ("consolas", 12)
 
@@ -336,8 +341,8 @@ class ChatWindow(tk.Tk):
         return
 
 class PublicChatWindow(ChatWindow):
-    def __init__(self, client):
-        super().__init__(client)
+    def __init__(self, client, parent):
+        super().__init__(client, parent)
         self.title("Chatroom ---- User: " + self.client.username)
         self.login_list.bind("<Double-Button-1>", self.start_private_chat)
         self.mainloop()
@@ -362,8 +367,8 @@ class PublicChatWindow(ChatWindow):
         self.client.start_private_chat_with(receiver_name)
 
 class PrivateChatWindow(ChatWindow):
-    def __init__(self, client, private_name):
-        super().__init__(client)
+    def __init__(self, client, parent, private_name):
+        super().__init__(client, parent)
         self.private_name = private_name
         self.title("Private Chat With:\t" + private_name)
         self.login_list.delete(0, tk.END)
@@ -383,4 +388,4 @@ class PrivateChatWindow(ChatWindow):
 
 if __name__ == '__main__':
     client = Client(HOST, PORT)
-    client.run()
+    client.mainloop()
