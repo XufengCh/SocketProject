@@ -31,7 +31,8 @@ class Client:
 
     def run(self):
         # create login_window thread
-        threading.Thread(target=self.create_login_window, daemon=True).start()
+        #threading.Thread(target=self.create_login_window, daemon=True).start()
+        self.create_login_window()
         # watch start_login_flag
         while not self.start_login_flag:
             pass
@@ -59,9 +60,12 @@ class Client:
         """Display alert box"""
         messagebox.showinfo('Error: ', message)
 
-    def send_message(self, message):
+    def send_message_thread(self, message):
         print("Send Success")
         self.__socket.sendall(message.encode())
+
+    def send_message(self, message):
+        threading.Thread(target=self.send_message_thread, args=(message, ), daemon=True).start()
 
     def logout(self):
         # exit
@@ -87,7 +91,8 @@ class Client:
         # create private chat window
         #private_window = PrivateChatWindow(self, private_name)
         #self.private_window_dict[private_name] = private_window
-        threading.Thread(target=self.create_private_window, args=(private_name, ), daemon=True).start()
+        #threading.Thread(target=self.create_private_window, args=(private_name, ), daemon=True).start()
+        self.create_private_window(private_name)
 
     def exit_private_chat(self, private_name):
         try:
@@ -178,7 +183,8 @@ class Client:
                 # create main_window
                 #self.main_window = PublicChatWindow(self)
                 #threading.Thread(target=self.main_window.run, daemon=True).start()
-                threading.Thread(target=self.create_main_window, daemon=True).start()
+                #threading.Thread(target=self.create_main_window, daemon=True).start()
+                self.create_main_window()
 
                 # create receive thread
                 threading.Thread(target=self.receive_message_thread, daemon=True).start()
