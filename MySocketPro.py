@@ -85,6 +85,8 @@ def analyze_protocol_msg(data):
         ret[name] = value
 
     data = data[1:]
+    while len(data) >= 1 and data[-1] == '\n':
+        data = data[:len(data)-1]
     ret['message'] = data
     return ret
 

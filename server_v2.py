@@ -106,7 +106,8 @@ class Server:
                         self.__user_dict[login_name] = conn
                         self.__count +=1
                         # send LOGIN message
-                        login_msg = make_protocol_msg(method="LOGIN", from_who="SERVER")
+                        clients = ' '.join([user for user in self.__user_dict.keys()])
+                        login_msg = make_protocol_msg(method="LOGIN", from_who="SERVER", message=clients)
                         conn.sendall(login_msg.encode())
                         # update login list
                         self.update_client_list()

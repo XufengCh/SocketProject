@@ -282,7 +282,7 @@ class ChatWindow(tk.Tk):
 
         # Listbox widget for displaying active users and selecting them
         self.login_list = tk.Listbox(main_frame, width=15, height=20, selectmode=tk.SINGLE, font=self.font,
-                                    selectbackground='#DCDCDC')
+                                    foreground='black', selectbackground='#DCDCDC')
         self.login_list.grid(row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew")
         #self.login_list.bind("<Double-Button-1>", self.start_private_chat)
 
